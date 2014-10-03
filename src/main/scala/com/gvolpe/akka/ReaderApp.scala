@@ -13,8 +13,6 @@ object ReaderApp extends App {
 
   implicit val ec = global
 
-  def sleep(duration: Long) { Thread.sleep(duration) }
-
   val system = ActorSystem("FileReaderSystem")
   val actor = system.actorOf(Props(new WordCounterActor("files/rockbands.txt")))
   implicit val timeout = Timeout(25 seconds)
