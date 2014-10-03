@@ -12,10 +12,10 @@ import scala.util.{ Success, Failure }
 object ReaderApp extends App {
 
   implicit val ec = global
+  implicit val timeout = Timeout(25 seconds)
 
   val system = ActorSystem("FileReaderSystem")
   val actor = system.actorOf(Props(new WordCounterActor("files/rockbands.txt")))
-  implicit val timeout = Timeout(25 seconds)
 
   val futureCount = actor ? StartProcessFileMsg()
 
