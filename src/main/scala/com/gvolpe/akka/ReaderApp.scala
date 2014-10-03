@@ -19,9 +19,9 @@ object ReaderApp extends App {
   val actor = system.actorOf(Props(new WordCounterActor("files/rockbands.txt")))
   implicit val timeout = Timeout(25 seconds)
 
-  val future = actor ? StartProcessFileMsg()
+  val futureCount = actor ? StartProcessFileMsg()
 
-  future.map { result =>
+  futureCount map { result =>
     println("Total words in file: " + result)
     system.shutdown
   }
