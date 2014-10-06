@@ -1,24 +1,43 @@
 package com.gvolpe.akka.actors
 
-import akka.actor.ActorRef
-import akka.actor.Actor
-import akka.actor.Props
+import akka.actor.{ActorRef, Actor, Props}
 
 case class StartProcessFileMsg()
+case class AlreadyRunningMsg()
 
-class WordCounterActor(filename: String) extends Actor {
+object WordCounterActor {
 
-  private var running = false
-  private var totalLines = 0
-  private var linesProcessed = 0
-  private var result = 0
-  private var fileSender: Option[ActorRef] = None
+  def props(filename: String) = {
+    Props(new WordCounterActor(filename))
+  }
   
-  def receive = {
+  class WordCounterActor(filename: String) extends Actor {
+  
+    private var totalLines = 0
+    private var linesProcessed = 0
+    private var result = 0
+    private var fileSender: Option[ActorRef] = None
     
-    case StartProcessFileMsg() => {
-      if (!running) {
-        running = true
+    def receive = startProcess
+    
+    def processAlreadyRunning: Receive = {
+      case StartProcessFileMsg() => {
+        println("Process is already running!") 
+      }
+      case StringProcessedMsg(wordsAmount) => {
+        result += wordsAmount
+        linesProcessed += 1
+        if (linesProcessed == totalLines) {
+          fileSender.map(_ ! result)
+        }
+      }
+      case _ => println("WordCounterActor: Message not recognized.")
+    }
+    
+    def startProcess: Receive = {
+      
+      case StartProcessFileMsg() => {
+    	  context.become(processAlreadyRunning)
         fileSender = Some(sender)
         
         import scala.io.Source._
@@ -27,16 +46,10 @@ class WordCounterActor(filename: String) extends Actor {
           totalLines += 1
         }
       }
+      case _ => println("WordCounterActor: Message not recognized.")
+      
     }
-    case StringProcessedMsg(wordsAmount) => {
-      result += wordsAmount
-      linesProcessed += 1
-      if (linesProcessed == totalLines) {
-        fileSender.map(_ ! result)
-      }
-    }
-    case _ => println("WordCounterActor: Message not recognized.")
     
   }
-  
+
 }
