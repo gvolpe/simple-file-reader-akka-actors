@@ -3,7 +3,6 @@ package com.gvolpe.akka.actors
 import akka.actor.{ActorRef, Actor, Props}
 
 case class StartProcessFileMsg()
-case class AlreadyRunningMsg()
 
 object WordCounterActor {
 
