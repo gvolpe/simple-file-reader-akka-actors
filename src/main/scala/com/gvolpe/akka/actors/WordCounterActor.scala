@@ -2,7 +2,7 @@ package com.gvolpe.akka.actors
 
 import akka.actor.{ActorRef, Actor, Props}
 
-case class StartProcessFileMsg()
+case object StartProcessFileMsg
 
 object WordCounterActor {
 
@@ -33,7 +33,7 @@ class WordCounterActor(filename: String) extends Actor {
   }
   
   def startProcess: Receive = {
-    case StartProcessFileMsg() => {
+    case StartProcessFileMsg => {
       context.become(processAlreadyRunning)
       fileSender = Some(sender)
       

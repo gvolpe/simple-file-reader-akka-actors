@@ -17,9 +17,9 @@ object ReaderApp extends App {
   val system = ActorSystem("FileReaderSystem")
   val actor = system.actorOf(WordCounterActor.props("files/rockbands.txt"))
 
-  val futureCount = actor ? StartProcessFileMsg()
-//  actor ? StartProcessFileMsg() // Will print that Process is already running!
-//	actor ? StartProcessFileMsg() // Will print that Process is already running!
+  val futureCount = actor ? StartProcessFileMsg
+//  actor ? StartProcessFileMsg // Will print that Process is already running!
+//	actor ? StartProcessFileMsg // Will print that Process is already running!
 
   futureCount map { result =>
     println("Total words in file: " + result)
